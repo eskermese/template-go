@@ -1,0 +1,158 @@
+basePath: /api/
+definitions:
+  core.CreateProductInput:
+    properties:
+      name:
+        type: string
+      price:
+        minimum: 0
+        type: integer
+    required:
+    - name
+    type: object
+  core.FieldError:
+    properties:
+      field:
+        type: string
+      message:
+        type: string
+    type: object
+  core.Product:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      price:
+        type: integer
+    type: object
+  core.UpdateProductInput:
+    properties:
+      name:
+        type: string
+      price:
+        minimum: 0
+        type: integer
+    required:
+    - name
+    type: object
+  restHandler.response:
+    properties:
+      detail:
+        type: string
+    type: object
+host: localhost:8000
+info:
+  contact: {}
+  description: Application for adding/getting products
+  title: Product app REST-API
+  version: "1.0"
+paths:
+  /products:
+    get:
+      consumes:
+      - application/json
+      description: Get products
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/core.Product'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            items:
+              $ref: '#/definitions/core.FieldError'
+            type: array
+      summary: Get Products
+      tags:
+      - products
+    post:
+      consumes:
+      - application/json
+      description: Create products
+      parameters:
+      - description: create product
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/core.CreateProductInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/core.Product'
+        "400":
+          description: Bad Request
+          schema:
+            items:
+              $ref: '#/definitions/core.FieldError'
+            type: array
+      summary: Create Product
+      tags:
+      - products
+  /products/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete product
+      parameters:
+      - description: product id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/restHandler.response'
+      summary: Delete Product
+      tags:
+      - products
+    put:
+      consumes:
+      - application/json
+      description: Update products
+      parameters:
+      - description: product id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: update product
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/core.UpdateProductInput'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            items:
+              $ref: '#/definitions/core.FieldError'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/restHandler.response'
+      summary: Update Product
+      tags:
+      - products
+swagger: "2.0"
